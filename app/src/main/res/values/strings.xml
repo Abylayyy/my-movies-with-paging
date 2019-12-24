@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">MyMovieWithPaginLibrary</string>
+    <string name="connection_problem">Connection Problem!!!</string>
+    <string name="movie_info">Movie Info</string>
 </resources>
