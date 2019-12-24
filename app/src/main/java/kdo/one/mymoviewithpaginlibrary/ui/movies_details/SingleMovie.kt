@@ -3,6 +3,7 @@ package kdo.one.mymoviewithpaginlibrary.ui.movies_details
 import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
@@ -12,7 +13,6 @@ import com.bumptech.glide.Glide
 import kdo.one.mymoviewithpaginlibrary.R
 import kdo.one.mymoviewithpaginlibrary.data.api.POSTER_BASE_URL
 import kdo.one.mymoviewithpaginlibrary.data.api.TheMovieDBClient
-import kdo.one.mymoviewithpaginlibrary.data.api.TheMovieDBInterface
 import kdo.one.mymoviewithpaginlibrary.data.repository.NetworkState
 import kdo.one.mymoviewithpaginlibrary.data.vo.MovieDetails
 import kotlinx.android.synthetic.main.activity_single_movie.*
@@ -32,14 +32,9 @@ class SingleMovie : AppCompatActivity() {
         val movieId: Int = intent.getIntExtra("id", 1)
 
         val apiService = TheMovieDBClient.getClient()
-        repository =
-            MovieDetailsRepository(
-                apiService
-            )
+        repository = MovieDetailsRepository(apiService)
         viewModel = getViewModel(movieId)
-        viewModel.movieDetails.observe(this, Observer {
-            binUi(it)
-        })
+        viewModel.movieDetails.observe(this, Observer { binUi(it) })
 
         viewModel.networkState.observe(this, Observer {
             progress_bar.visibility = if (it == NetworkState.LOADING) View.VISIBLE else View.GONE
@@ -61,16 +56,14 @@ class SingleMovie : AppCompatActivity() {
         movie_revenue.text = formatCurrency.format(it?.revenue)
 
         val moviePosterUrl = POSTER_BASE_URL + it?.posterPath
+        Log.d("DETAIL_IMAGE", moviePosterUrl)
         Glide.with(this).load(moviePosterUrl).into(iv_movie_poster)
     }
 
     private fun getViewModel(movieId: Int): SingleMovieViewModel {
         return ViewModelProviders.of(this, object : ViewModelProvider.Factory {
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                return SingleMovieViewModel(
-                    repository,
-                    movieId
-                ) as T
+                return SingleMovieViewModel(repository, movieId) as T
             }
         })[SingleMovieViewModel::class.java]
     }

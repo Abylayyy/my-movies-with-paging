@@ -2,6 +2,7 @@ package kdo.one.mymoviewithpaginlibrary.ui.popular_movies
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -55,7 +56,6 @@ class MoviePagedListAdapter(val context: Context): PagedListAdapter<Movie, Recyc
         override fun areItemsTheSame(oldItem: Movie, newItem: Movie): Boolean {
             return oldItem.id == newItem.id
         }
-
         override fun areContentsTheSame(oldItem: Movie, newItem: Movie): Boolean {
             return oldItem == newItem
         }
@@ -67,9 +67,10 @@ class MoviePagedListAdapter(val context: Context): PagedListAdapter<Movie, Recyc
             itemView.cv_movie_release_date.text = movie?.releaseDate
 
             val moviePosterURL = POSTER_BASE_URL + movie?.posterPath
-            Glide.with(itemView.context).load(moviePosterURL).into(itemView.cv_iv_movie_poster)
+            Glide.with(context).load(moviePosterURL).into(itemView.cv_iv_movie_poster)
 
             itemView.setOnClickListener{
+                Log.d("IMAGE::", moviePosterURL)
                 Intent(context, SingleMovie::class.java).also {
                     it.putExtra("id", movie?.id)
                     context.startActivity(it)
